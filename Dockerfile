@@ -1,13 +1,13 @@
-FROM node:18-alpine AS builder
+FROM node:18-alpine AS development
 
 WORKDIR /app
-COPY ./package.json ./
-RUN yarn install
+COPY ./package*.json ./
+RUN npm i
 COPY . .
-RUN yarn run build:prod
+RUN npm run build
 
 
-FROM node:18-alpine
+FROM node:18-alpine AS production
 WORKDIR /app
-COPY --from=builder /app ./
-CMD ["yarn", "run", "start:prod"]
+COPY --from=development /app ./
+CMD ["npm", "run", "start:prod"]

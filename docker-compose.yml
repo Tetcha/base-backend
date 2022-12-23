@@ -13,11 +13,21 @@ services:
     volumes:
       - ./.docker/postgres_data_dev:/var/lib/postgresql/data
     healthcheck:
-      test: ['CMD', 'pg_isready', '-U', 'root', '-d', 'base_nest']
+      test:
+        [
+          'CMD',
+          'pg_isready',
+          '-U',
+          'root',
+          '-d',
+          'base_nest'
+        ]
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 5s
+    networks:
+      - rms-dev
   flyway:
     image: flyway/flyway
     container_name: flyway
@@ -26,3 +36,27 @@ services:
       - './sql:/flyway/sql'
     depends_on:
       - postgres
+    networks:
+      - rms-dev
+  api:
+    container_name: api
+    build:
+      dockerfile: Dockerfile
+      context: .
+      target: development
+    env_file:
+      - .env.development
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: sh -c "yarn install && yarn run start:dev"
+    ports:
+      - 4000:4000
+    depends_on:
+      - postgres
+    networks:
+      - rms-dev
+networks:
+  rms-dev:
+    external: false
+    name: rms-network-dev
