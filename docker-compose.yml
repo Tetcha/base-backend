@@ -13,17 +13,16 @@ services:
     volumes:
       - ./.docker/postgres_data_dev:/var/lib/postgresql/data
     healthcheck:
-      test:
-        [
-          "CMD",
-          "pg_isready",
-          "-U",
-          "root",
-          "-d",
-          "base_nest"
-        ]
+      test: ['CMD', 'pg_isready', '-U', 'root', '-d', 'base_nest']
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 5s
- 
+  flyway:
+    image: flyway/flyway
+    container_name: flyway
+    command: -url=jdbc:postgresql://postgres/base_nest -user=root -password=1234 -mixed="true" -connectRetries=60 migrate
+    volumes:
+      - './sql:/flyway/sql'
+    depends_on:
+      - postgres
