@@ -1,0 +1,10 @@
+CREATE TABLE
+    IF NOT EXISTS account (
+        id VARCHAR PRIMARY KEY,
+        name VARCHAR(50) DEFAULT NULL,
+        password VARCHAR(50) DEFAULT NULL,
+        email VARCHAR(50) DEFAULT NULL UNIQUE,
+        googleId VARCHAR(255) DEFAULT NULL UNIQUE,
+        facebookId VARCHAR(255) DEFAULT NULL UNIQUE,
+        isVerified BOOLEAN NOT NULL DEFAULT FALSE,
+    );
