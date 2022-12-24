@@ -2,37 +2,29 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { Request, Response } from 'express';
-import { AccountService } from '../account';
-import { Account, constant } from '../core';
+import { Account, constant, DatabaseService } from '../core';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly accountService: AccountService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
+    private readonly databaseService: DatabaseService,
   ) {}
 
-  async createAccountWithGoogle(name: string, email: string, googleId: string) {
-    const account = new Account();
-    account.name = name;
-    account.email = email;
-    account.password = '';
-    account.googleId = googleId;
-    return await this.accountService.createAccount(account);
-  }
-
-  async createAccountWithFacebook(
+  async createAccountWithOAuth(
     name: string,
     email: string,
-    facebookId: string,
+    oauthId: string,
+    oauthType: string,
   ) {
     const account = new Account();
     account.name = name;
     account.email = email;
     account.password = '';
-    account.facebookId = facebookId;
-    return await this.accountService.createAccount(account);
+    if (oauthType === 'google') account.googleId = oauthId;
+    else if (oauthType === 'facebook') account.facebookId = oauthId;
+    return await this.databaseService.createOne<Account>(Account, account);
   }
 
   async handleOAuthCallBack(req: Request, res: Response) {

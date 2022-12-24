@@ -10,7 +10,6 @@ export const router = (app: INestApplication) => {
     .setTitle('Base NestJS API')
     .setDescription('The base NestJS API description')
     .setVersion('0.1.0')
-    .addTag('base')
     .build();
 
   const document = SwaggerModule.createDocument(app, swaggerConfig);

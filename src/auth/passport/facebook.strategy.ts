@@ -2,15 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { Profile, Strategy } from 'passport-facebook';
-import { AccountService } from '../../account';
+import { Account, DatabaseService } from '../../core';
 import { AuthService } from '../auth.service';
 
 @Injectable()
 export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
   constructor(
     private readonly configService: ConfigService,
-    private readonly accountService: AccountService,
     private readonly authService: AuthService,
+    private readonly databaseService: DatabaseService,
   ) {
     super({
       clientID: configService.get<string>('facebook.clientID'),
@@ -29,12 +29,17 @@ export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
   ): Promise<any> {
     const { name, emails, id } = profile;
     try {
-      let account = await this.accountService.getAccountByFacebookId(id);
+      let account = await this.databaseService.getOneByField<Account>(
+        Account,
+        'facebookId',
+        id,
+      );
       if (!account) {
-        account = await this.authService.createAccountWithFacebook(
+        account = await this.authService.createAccountWithOAuth(
           name.givenName,
           emails[0].value,
           id,
+          'facebook',
         );
       }
       done(null, account);
