@@ -10,6 +10,13 @@ export const router = (app: INestApplication) => {
     .setTitle('Base NestJS API')
     .setDescription('The base NestJS API description')
     .setVersion('0.1.0')
+    .addBearerAuth({
+      name: 'Authentication',
+      bearerFormat: 'Bearer',
+      scheme: 'Bearer',
+      in: 'Header',
+      type: 'http',
+    })
     .build();
 
   const document = SwaggerModule.createDocument(app, swaggerConfig);

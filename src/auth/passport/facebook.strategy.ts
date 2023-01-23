@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { Profile, Strategy } from 'passport-facebook';
-import { Account, DatabaseService } from '../../core';
+import { Student, DatabaseService } from '../../core';
 import { AuthService } from '../auth.service';
 
 @Injectable()
@@ -29,8 +29,8 @@ export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
   ): Promise<any> {
     const { name, emails, id } = profile;
     try {
-      let account = await this.databaseService.getOneByField<Account>(
-        Account,
+      let account = await this.databaseService.getOneByField<Student>(
+        Student,
         'facebookId',
         id,
       );

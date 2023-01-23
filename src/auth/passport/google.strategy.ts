@@ -3,7 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ConfigService } from '@nestjs/config';
 import { Profile, Strategy, VerifyCallback } from 'passport-google-oauth20';
 import { AuthService } from './../auth.service';
-import { Account, DatabaseService } from '../../core';
+import { Student, DatabaseService } from '../../core';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
@@ -24,8 +24,8 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
 
   async validate(profile: Profile, done: VerifyCallback) {
     try {
-      let account = await this.databaseService.getOneByField<Account>(
-        Account,
+      let account = await this.databaseService.getOneByField<Student>(
+        Student,
         'googleId',
         profile.id,
       );

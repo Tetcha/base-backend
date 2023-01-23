@@ -8,7 +8,7 @@ export class DatabaseService {
   getOneByField<T>(
     entity: EntityTarget<T>,
     field: keyof T,
-    value: string,
+    value: any,
   ): Promise<T> {
     return this.dataSource
       .getRepository(entity)

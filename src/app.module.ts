@@ -2,7 +2,10 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { configuration, DbModule } from './config';
 import { AuthModule } from './auth';
-import { AccountModule } from './account';
+import { StudentController } from './student/student.controller';
+import { StudentService } from './student/student.service';
+import { StudentModule } from './student/student.module';
+import { DatabaseModule } from './core';
 
 @Module({
   imports: [
@@ -13,7 +16,10 @@ import { AccountModule } from './account';
     }),
     DbModule,
     AuthModule,
-    AccountModule,
+    StudentModule,
+    DatabaseModule,
   ],
+  controllers: [StudentController],
+  providers: [StudentService],
 })
 export class AppModule {}
